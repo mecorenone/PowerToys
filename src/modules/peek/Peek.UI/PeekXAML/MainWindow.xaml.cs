@@ -80,6 +80,25 @@ namespace Peek.UI
             }
         }
 
+        /// <summary>
+        /// Preview files passed through command line.
+        /// </summary>
+        public void PreviewCommandLine(bool firstActivation)
+        {
+            if (firstActivation)
+            {
+                Activate();
+            }
+
+            // Hide if there is no file to preview
+            if (firstActivation && ViewModel.CurrentItem == null)
+            {
+                Uninitialize();
+            }
+
+            Initialize();
+        }
+
         private void HandleThemeChange()
         {
             AppWindow appWindow = this.AppWindow;
@@ -132,6 +151,12 @@ namespace Peek.UI
             bootTime.Stop();
 
             PowerToysTelemetry.Log.WriteEvent(new OpenedEvent() { FileExtension = ViewModel.CurrentItem?.Extension ?? string.Empty, HotKeyToVisibleTimeMs = bootTime.ElapsedMilliseconds });
+        }
+
+        private void Initialize()
+        {
+            ViewModel.Initialize();
+            ViewModel.ScalingFactor = this.GetMonitorScale();
         }
 
         private void Uninitialize()
